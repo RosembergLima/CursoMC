@@ -9,10 +9,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import br.com.curso.domain.Cidade;
 import br.com.curso.domain.Cliente;
+import br.com.curso.domain.Endereco;
+import br.com.curso.domain.enums.TipoCliente;
 import br.com.curso.dto.ClienteDTO;
+import br.com.curso.dto.ClienteNewDTO;
 import br.com.curso.repositories.ClienteRepository;
+import br.com.curso.repositories.EnderecoRepository;
 import br.com.curso.services.exceptions.DataIntegrityException;
 import br.com.curso.services.exceptions.ObjectNotFoundException;
 
@@ -21,6 +27,9 @@ public class ClienteService {
 
 	@Autowired
 	private ClienteRepository repo;
+
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 
 	public Cliente find(Integer id) throws ObjectNotFoundException {
 		Optional<Cliente> cat = repo.findById(id);
@@ -61,4 +70,28 @@ public class ClienteService {
 		return new Cliente(objDTO.getId(), objDTO.getNome(), objDTO.getEmail(), null, null);
 	}
 
+	public Cliente fromDTO(ClienteNewDTO objDto) {
+		Cliente cli = new Cliente(null, objDto.getNome(), objDto.getEmail(), objDto.getCpfOuCnpj(),
+				TipoCliente.toEnum(objDto.getTipo()));
+		Cidade cid = new Cidade(objDto.getCidadeId(), null, null);
+		Endereco end = new Endereco(null, objDto.getLogradouro(), objDto.getNumero(), objDto.getComplemento(),
+				objDto.getBairro(), objDto.getCep(), cli, cid);
+		cli.getEnderecos().add(end);
+		cli.getTelefones().add(objDto.getTelefone1());
+		if (objDto.getTelefone2() != null) {
+			cli.getTelefones().add(objDto.getTelefone2());
+		}
+		if (objDto.getTelefone3() != null) {
+			cli.getTelefones().add(objDto.getTelefone3());
+		}
+		return cli;
+	}
+
+	@Transactional
+	public Cliente insert(Cliente obj) {
+		obj.setId(null);
+		obj = repo.save(obj);
+		enderecoRepository.saveAll(obj.getEnderecos());
+		return obj;
+	}
 }
