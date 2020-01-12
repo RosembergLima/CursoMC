@@ -38,7 +38,7 @@ public class Pedido implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "endereco_entrega_id")
 	private Endereco enderecoEntrega;
-	
+
 	@OneToMany(mappedBy = "id.pedido")
 	private Set<ItemPedido> itens = new HashSet<>();
 
@@ -51,6 +51,14 @@ public class Pedido implements Serializable {
 		this.instante = instante;
 		this.cliente = cliente;
 		this.enderecoEntrega = enderecoEntrega;
+	}
+
+	public Double getValorTotal() {
+		double soma = 0;
+		for (ItemPedido itemPedido : itens) {
+			soma = soma + itemPedido.getSubTotal();
+		}
+		return soma;
 	}
 
 	public Integer getId() {
@@ -101,7 +109,6 @@ public class Pedido implements Serializable {
 		this.itens = itens;
 	}
 
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -127,5 +134,4 @@ public class Pedido implements Serializable {
 		return true;
 	}
 
-	
 }
