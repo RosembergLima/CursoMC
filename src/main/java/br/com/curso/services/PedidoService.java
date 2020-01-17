@@ -34,6 +34,9 @@ public class PedidoService {
 	@Autowired
 	private ProdutoService produtoService;
 	
+	@Autowired
+	private ClienteService clienteService;
+	
 	public Pedido find(Integer id) throws ObjectNotFoundException {
 		Optional<Pedido> cat = repo.findById(id);
 		return cat.orElseThrow(() -> new ObjectNotFoundException(
@@ -44,6 +47,7 @@ public class PedidoService {
 	public Pedido insert(Pedido obj) {
 		obj.setId(null);
 		obj.setInstante(new Date());
+		obj.setCliente(clienteService.find(obj.getCliente().getId()));
 		obj.getPagamento().setEstado(EstadoPagamento.PENDENTE);
 		obj.getPagamento().setPedido(obj);
 
@@ -62,6 +66,8 @@ public class PedidoService {
 		}
 		
 		itemPedidoRepository.saveAll(obj.getItens());
+		
+		System.out.println(obj);
 		
 		return obj;
 	}
