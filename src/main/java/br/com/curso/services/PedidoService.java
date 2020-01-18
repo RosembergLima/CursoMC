@@ -21,25 +21,25 @@ public class PedidoService {
 
 	@Autowired
 	private PedidoRepository repo;
-	
+
 	@Autowired
 	private BoletoService boletoService;
-	
+
 	@Autowired
 	private PagamentoRepository pagamentoRepository;
-	
+
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepository;
-	
+
 	@Autowired
 	private ProdutoService produtoService;
-	
+
 	@Autowired
 	private ClienteService clienteService;
-	
+
 	@Autowired
 	private EmailService emailService;
-	
+
 	public Pedido find(Integer id) throws ObjectNotFoundException {
 		Optional<Pedido> cat = repo.findById(id);
 		return cat.orElseThrow(() -> new ObjectNotFoundException(
@@ -60,18 +60,18 @@ public class PedidoService {
 		}
 		repo.save(obj);
 		pagamentoRepository.save(obj.getPagamento());
-		
+
 		for (ItemPedido ip : obj.getItens()) {
 			ip.setDesconto(0.0);
 			ip.setProduto(produtoService.find(ip.getProduto().getId()));
 			ip.setPreco(ip.getProduto().getPreco());
 			ip.setPedido(obj);
 		}
-		
+
 		itemPedidoRepository.saveAll(obj.getItens());
-		
-		emailService.sendOrderConfirmationEmail(obj);
-		
+
+		emailService.sendOrderConfirmationHtmlEmail(obj);
+
 		return obj;
 	}
 
