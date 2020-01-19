@@ -20,6 +20,7 @@ import br.com.curso.domain.PagamentoComCartao;
 import br.com.curso.domain.Pedido;
 import br.com.curso.domain.Produto;
 import br.com.curso.domain.enums.EstadoPagamento;
+import br.com.curso.domain.enums.Perfil;
 import br.com.curso.domain.enums.TipoCliente;
 import br.com.curso.repositories.CategoriaRepository;
 import br.com.curso.repositories.CidadeRepository;
@@ -60,7 +61,7 @@ public class DBService {
 
 	@Autowired
 	private ItemPedidoRepository itemPedidoRepo;
-	
+
 	@Autowired
 	private BCryptPasswordEncoder passwordEncoder;
 
@@ -121,17 +122,24 @@ public class DBService {
 		estRepo.saveAll(Arrays.asList(est1, est2));
 		cidRepo.saveAll(Arrays.asList(c1, c2, c3));
 
-		Cliente cli1 = new Cliente(null, "Maria Silva", "rosemberg.bezerra@gmail.com", "08946602414", TipoCliente.PESSOAFISICA, passwordEncoder.encode("123"));
-
+		Cliente cli1 = new Cliente(null, "Maria Silva", "rosemberg.bezerra@gmail.com", "08946602414",
+				TipoCliente.PESSOAFISICA, passwordEncoder.encode("123"));
 		cli1.getTelefones().addAll(Arrays.asList("38354290", "99889882"));
+
+		Cliente cli2 = new Cliente(null, "Rosemberg Bezerra", "rosemberg_lima@hotmail.com", "40196590019",
+				TipoCliente.PESSOAFISICA, passwordEncoder.encode("123"));
+		cli2.addPerfil(Perfil.ADMIN);
+		cli2.getTelefones().addAll(Arrays.asList("38354290", "99889882"));
 
 		Endereco e1 = new Endereco(null, "Estrada Salvador Allende", "11", "2 DTO", "Venteira", "2700042", cli1, c1);
 		Endereco e2 = new Endereco(null, "Rua Jose Braz Moscow", "62", "204 BL B", "Piedade", "54410390", cli1, c2);
+		Endereco e3 = new Endereco(null, "Rua Floriano", "162", "1204 BL B", "Jardim Piedade", "54410390", cli2, c2);
 
 		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		cli2.getEnderecos().addAll(Arrays.asList(e3));
 
-		cliRepo.save(cli1);
-		endeRepo.saveAll(Arrays.asList(e1, e2));
+		cliRepo.saveAll(Arrays.asList(cli1, cli2));
+		endeRepo.saveAll(Arrays.asList(e1, e2, e3));
 
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 
