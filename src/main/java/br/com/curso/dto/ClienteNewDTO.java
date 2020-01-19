@@ -13,29 +13,32 @@ import br.com.curso.services.validations.ClienteInsert;
 public class ClienteNewDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@NotEmpty(message = "Preenchimento obrigatório")
 	@Length(min = 3, max = 120, message = "O tamanho deve ser entre 3 e 120 caracteres")
 	private String nome;
-	
+
 	@NotEmpty(message = "Preenchimento obrigatório")
 	@Email(message = "Email inválido")
 	private String email;
-	
+
 	@NotEmpty(message = "Preenchimento obrigatório")
 	private String cpfOuCnpj;
-	
+
 	private Integer tipo;
 
 	@NotEmpty(message = "Preenchimento obrigatório")
+	private String senha;
+
+	@NotEmpty(message = "Preenchimento obrigatório")
 	private String logradouro;
-	
+
 	@NotEmpty(message = "Preenchimento obrigatório")
 	private String numero;
-	
+
 	private String complemento;
 	private String bairro;
-	
+
 	@NotEmpty(message = "Preenchimento obrigatório")
 	private String cep;
 
@@ -63,6 +66,14 @@ public class ClienteNewDTO implements Serializable {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getSenha() {
+		return senha;
+	}
+
+	public void setSenha(String senha) {
+		this.senha = senha;
 	}
 
 	public String getCpfOuCnpj() {
