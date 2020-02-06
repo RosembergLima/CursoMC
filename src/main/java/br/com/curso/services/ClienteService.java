@@ -40,7 +40,7 @@ public class ClienteService {
 
 	public Cliente find(Integer id) throws ObjectNotFoundException {
 		UserSS user = UserService.authenticated();
-		if (user==null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
+		if (user == null || !user.hasRole(Perfil.ADMIN) && !id.equals(user.getId())) {
 			throw new AuthorizationException("Acesso negado");
 		}
 
@@ -105,5 +105,9 @@ public class ClienteService {
 		obj = repo.save(obj);
 		enderecoRepository.saveAll(obj.getEnderecos());
 		return obj;
+	}
+
+	public Cliente findByEmail(String email) {
+		return repo.findByEmail(email);
 	}
 }
